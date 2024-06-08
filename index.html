@@ -3,74 +3,74 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PostIt.org</title>
+    <title>Infinity Chat</title>
     <style>
-body {
-    font-family: Arial, sans-serif;
-}
+        body {
+            font-family: Arial, sans-serif;
+        }
 
-h1 {
-    text-align: center;
-}
+        h1 {
+            text-align: center;
+        }
 
-#newPostButton {
-    margin: 10px;
-}
+        #newPostButton {
+            margin: 10px;
+        }
 
-.modal {
-    display: none;
-    position: fixed;
-    z-index: 1;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    overflow: auto;
-    background-color: rgba(0,0,0,0.4);
-}
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+        }
 
-.modal-content {
-    background-color: #fefefe;
-    margin: 15% auto;
-    padding: 20px;
-    border: 1px solid #888;
-    width: 50%;
-}
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 50%;
+        }
 
-.close {
-    color: #aaa;
-    float: right;
-    font-size: 28px;
-    font-weight: bold;
-}
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
 
-.close:hover,
-.close:focus {
-    color: black;
-    text-decoration: none;
-    cursor: pointer;
-}
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
 
-#postsContainer {
-    margin: 20px;
-}
+        #postsContainer {
+            margin: 20px;
+        }
 
-.post {
-    border: 1px solid #ccc;
-    padding: 10px;
-    margin-bottom: 10px;
-}
-</style>
+        .post {
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+    </style>
 </head>
 <body>
-    <h1>Post Something</h1>
+    <h1>Infinity Chat</h1>
     <button id="newPostButton">Create New Post</button>
     <div id="postsContainer"></div>
 
     <div id="newPostModal" class="modal">
         <div class="modal-content">
             <span class="close">&times;</span>
-            <h2>New Blog Post</h2>
+            <h2>New Chat Post</h2>
             <input type="text" id="postTitle" placeholder="Enter title">
             <textarea id="postContent" placeholder="Enter content"></textarea>
             <button id="createPostButton">Create Post</button>
@@ -78,47 +78,69 @@ h1 {
     </div>
 
     <script>
-const newPostButton = document.getElementById("newPostButton");
-const newPostModal = document.getElementById("newPostModal");
-const createPostButton = document.getElementById("createPostButton");
-const postsContainer = document.getElementById("postsContainer");
-const postTitleInput = document.getElementById("postTitle");
-const postContentInput = document.getElementById("postContent");
+        const newPostButton = document.getElementById("newPostButton");
+        const newPostModal = document.getElementById("newPostModal");
+        const createPostButton = document.getElementById("createPostButton");
+        const postsContainer = document.getElementById("postsContainer");
+        const postTitleInput = document.getElementById("postTitle");
+        const postContentInput = document.getElementById("postContent");
 
-newPostButton.addEventListener("click", () => {
-    newPostModal.style.display = "block";
-});
+        newPostButton.addEventListener("click", () => {
+            newPostModal.style.display = "block";
+        });
 
-createPostButton.addEventListener("click", () => {
-    const title = postTitleInput.value;
-    const content = postContentInput.value;
+        createPostButton.addEventListener("click", () => {
+            const title = postTitleInput.value;
+            const content = postContentInput.value;
 
-    if (title && content) {
-        const post = document.createElement("div");
-        post.className = "post";
-        post.innerHTML = `
-            <h3>${title}</h3>
-            <p>${content}</p>
-        `;
-        postsContainer.appendChild(post);
+            if (title && content) {
+                const post = {
+                    title,
+                    content
+                };
+                savePost(post);
+                displayPost(post);
 
-        postTitleInput.value = "";
-        postContentInput.value = "";
-        newPostModal.style.display = "none";
-    } else {
-        alert("Please enter title and content for the post.");
-    }
-});
+                postTitleInput.value = "";
+                postContentInput.value = "";
+                newPostModal.style.display = "none";
+            } else {
+                alert("Please enter title and content for the post.");
+            }
+        });
 
-newPostModal.querySelector(".close").addEventListener("click", () => {
-    newPostModal.style.display = "none";
-});
+        newPostModal.querySelector(".close").addEventListener("click", () => {
+            newPostModal.style.display = "none";
+        });
 
-window.addEventListener("click", (event) => {
-    if (event.target === newPostModal) {
-        newPostModal.style.display = "none";
-    }
-});
-</script>
+        window.addEventListener("click", (event) => {
+            if (event.target === newPostModal) {
+                newPostModal.style.display = "none";
+            }
+        });
+
+        function savePost(post) {
+            const posts = JSON.parse(localStorage.getItem("posts")) || [];
+            posts.push(post);
+            localStorage.setItem("posts", JSON.stringify(posts));
+        }
+
+        function displayPost(post) {
+            const postElement = document.createElement("div");
+            postElement.className = "post";
+            postElement.innerHTML = `
+                <h3>${post.title}</h3>
+                <p>${post.content}</p>
+            `;
+            postsContainer.appendChild(postElement);
+        }
+
+        function loadPosts() {
+            const posts = JSON.parse(localStorage.getItem("posts")) || [];
+            posts.forEach(displayPost);
+        }
+
+        window.onload = loadPosts;
+    </script>
 </body>
 </html>
